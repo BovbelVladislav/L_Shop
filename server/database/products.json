@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "iPhone 15",
+    "description": "Современный смартфон Apple",
+    "price": 999,
+    "category": "phones",
+    "available": true
+  },
+  {
+    "id": 2,
+    "name": "Samsung Galaxy S24",
+    "description": "Флагман Samsung",
+    "price": 899,
+    "category": "phones",
+    "available": true
+  },
+  {
+    "id": 3,
+    "name": "Xiaomi Vacuum Cleaner",
+    "description": "Робот-пылесос",
+    "price": 299,
+    "category": "home",
+    "available": false
+  }
+]
