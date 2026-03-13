@@ -42,10 +42,15 @@ export default function DeliveryPage() {
   }
 
   return (
-    <form className="delivery-form" onSubmit={handleSubmit}>
+    <form
+      className="delivery-form"
+      data-delivery
+      onSubmit={handleSubmit}
+    >
       <h1>Оформление доставки</h1>
 
       <input
+        data-delivery-address
         name="address"
         placeholder="Адрес"
         value={form.address}
@@ -54,6 +59,7 @@ export default function DeliveryPage() {
       />
 
       <input
+        data-delivery-phone
         name="phone"
         placeholder="Телефон"
         value={form.phone}
@@ -62,6 +68,7 @@ export default function DeliveryPage() {
       />
 
       <input
+        data-delivery-email
         name="email"
         placeholder="Почта"
         value={form.email}
@@ -70,6 +77,7 @@ export default function DeliveryPage() {
       />
 
       <select
+        data-delivery-payment
         name="payment"
         value={form.payment}
         onChange={handleChange}
@@ -80,6 +88,7 @@ export default function DeliveryPage() {
       </select>
 
       <textarea
+        data-delivery-comment
         name="comment"
         placeholder="Комментарий (необязательно)"
         value={form.comment}

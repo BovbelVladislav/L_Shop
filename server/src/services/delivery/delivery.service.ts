@@ -1,54 +1,60 @@
-import fs from "fs";
-import path from "path";
+import { UsersService, CartItem, DeliveryRecord } from "../users/users.service";
 
-const deliveryPath = path.join(process.cwd(), "server", "database", "delivery.json");
-const basketPath = path.join(process.cwd(), "server", "database", "basket.json");
+export interface DeliveryCreateData {
+  userId: number;
+  address: string;
+  phone: string;
+  email: string;
+  payment: string;
+  comment?: string;
+}
+
+export interface DeliveryQueryFilter {
+  limit?: number;
+  offset?: number;
+}
 
 export class DeliveryService {
-  static getAll() {
-    if (!fs.existsSync(deliveryPath)) return [];
-    return JSON.parse(fs.readFileSync(deliveryPath, "utf-8"));
+  static getDeliveries(userId: number, filter: DeliveryQueryFilter = {}): DeliveryRecord[] {
+    const user = UsersService.getUserById(userId);
+    if (!user) {
+      return [];
+    }
+
+    let deliveries = user.deliveries;
+
+    const offset = filter.offset ?? 0;
+    const limit = filter.limit ?? deliveries.length;
+
+    return deliveries.slice(offset, offset + limit);
   }
 
-  static saveAll(data: any) {
-    fs.writeFileSync(deliveryPath, JSON.stringify(data, null, 2));
-  }
+  static createDelivery(data: DeliveryCreateData): DeliveryRecord {
+    const user = UsersService.getUserById(data.userId);
+    if (!user) {
+      throw new Error("Пользователь не найден");
+    }
 
-  static getUserDeliveries(userId: number) {
-    const all = this.getAll();
-    return all.filter((d: any) => d.userId === userId);
-  }
+    if (user.cart.length === 0) {
+      throw new Error("Корзина пуста");
+    }
 
-  static createDelivery(userId: number, address: string, phone: string, email: string, payment: string, comment?: string) {
-    const basket = fs.existsSync(basketPath)
-      ? JSON.parse(fs.readFileSync(basketPath, "utf-8"))
-      : [];
-
-    const userBasket = basket.find((b: any) => b.userId === userId);
-    const items = userBasket ? userBasket.items : [];
-
-    const all = this.getAll();
-
-    const newDelivery = {
+    const newDelivery: DeliveryRecord = {
       id: Date.now(),
-      userId,
-      address,
-      phone,
-      email,
-      payment,
-      comment,
-      items,
+      userId: data.userId,
+      address: data.address,
+      phone: data.phone,
+      email: data.email,
+      payment: data.payment,
+      comment: data.comment,
+      items: [...user.cart],
       createdAt: new Date().toISOString()
     };
 
-    all.push(newDelivery);
-    this.saveAll(all);
+    user.deliveries.push(newDelivery);
+    user.cart = [];
 
-    // ОЧИСТКА КОРЗИНЫ ПОСЛЕ УСПЕШНОЙ ДОСТАВКИ
-    if (userBasket) {
-      userBasket.items = [];
-      fs.writeFileSync(basketPath, JSON.stringify(basket, null, 2));
-    }
+    UsersService.updateUser(user);
 
     return newDelivery;
   }

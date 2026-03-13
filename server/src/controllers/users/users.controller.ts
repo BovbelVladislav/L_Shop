@@ -1,48 +1,76 @@
 import { Request, Response } from "express";
-import { registerUser, loginUser, getUserById } from "../../services/users/users.service";
+import { UsersService, RegisterData } from "../../services/users/users.service";
 
-export async function register(req: Request, res: Response) {
-  try {
-    const user = await registerUser(req.body);
+interface RegisterBody extends RegisterData {}
 
-    res.cookie("session", user.id, {
-      httpOnly: true,
-      maxAge: 10 * 60 * 1000
-    });
-
-    res.json({ message: "Регистрация успешна", user });
-  } catch (e: any) {
-    res.status(400).json({ message: e.message });
-  }
+interface LoginBody {
+  login: string;
+  password: string;
 }
 
-export async function login(req: Request, res: Response) {
-  try {
-    const user = await loginUser(req.body.login, req.body.password);
+export class UsersController {
+  static async register(req: Request<{}, {}, RegisterBody>, res: Response) {
+    try {
+      const { name, email, login, phone, password } = req.body;
 
-    res.cookie("session", user.id, {
-      httpOnly: true,
-      maxAge: 10 * 60 * 1000
+      if (!name || !email || !login || !phone || !password) {
+        return res.status(400).json({ message: "Все поля обязательны" });
+      }
+
+      const user = await UsersService.registerUser(req.body);
+
+      res.cookie("session", String(user.id), {
+        httpOnly: true,
+        maxAge: 10 * 60 * 1000
+      });
+
+      return res.json({ message: "Регистрация успешна", user });
+    } catch (e) {
+      const error = e as Error;
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  static async login(req: Request<{}, {}, LoginBody>, res: Response) {
+    try {
+      const { login, password } = req.body;
+
+      if (!login || !password) {
+        return res.status(400).json({ message: "Логин и пароль обязательны" });
+      }
+
+      const user = await UsersService.loginUser(login, password);
+
+      res.cookie("session", String(user.id), {
+        httpOnly: true,
+        maxAge: 10 * 60 * 1000
+      });
+
+      return res.json({ message: "Вход выполнен", user });
+    } catch (e) {
+      const error = e as Error;
+      return res.status(400).json({ message: error.message });
+    }
+  }
+
+  static me(req: Request, res: Response) {
+    if (!req.user) {
+      return res.status(401).json({ message: "Не авторизован" });
+    }
+
+    const userId = Number(req.user.id);
+    const user = UsersService.getUserById(userId);
+
+    if (!user) {
+      return res.status(401).json({ message: "Сессия истекла" });
+    }
+
+    return res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      login: user.login,
+      phone: user.phone
     });
-
-    res.json({ message: "Вход выполнен", user });
-  } catch (e: any) {
-    res.status(400).json({ message: e.message });
   }
-}
-
-export function me(req: Request, res: Response) {
-  const session = req.cookies.session;
-
-  if (!session) {
-    return res.status(401).json({ message: "Не авторизован" });
-  }
-
-  const user = getUserById(Number(session));
-
-  if (!user) {
-    return res.status(401).json({ message: "Сессия истекла" });
-  }
-
-  res.json(user);
 }

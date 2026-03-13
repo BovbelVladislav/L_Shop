@@ -1,32 +1,33 @@
 import { Router } from "express";
-import { register, login, me } from "../controllers/users/users.controller";
-import { getProducts } from "../controllers/products/products.controller";
-import { addToCartController, getCartController } from "../controllers/cart/cart.controller";
+
+import { UsersController } from "../controllers/users/users.controller";
+import { ProductsController } from "../controllers/products/products.controller";
+import { CartController } from "../controllers/cart/cart.controller";
 import { FavoritesController } from "../controllers/favorites/favorites.controller";
-import { BasketController } from "../controllers/basket/basket.controller";
 import { DeliveryController } from "../controllers/delivery/delivery.controller";
+
+import { auth } from "../middleware/auth";
 
 const router = Router();
 
-router.get("/products", getProducts);
+router.post("/register", UsersController.register);
+router.post("/login", UsersController.login);
+router.get("/me", auth, UsersController.me);
 
-router.post("/register", register);
-router.post("/login", login);
+router.get("/products", ProductsController.get);
+router.get("/products/:id", ProductsController.getOne);
 
-router.get("/me", me);
+router.get("/cart", auth, CartController.get);
+router.post("/cart/add", auth, CartController.add);
+router.put("/cart/update", auth, CartController.update);
+router.delete("/cart/remove", auth, CartController.remove);
+router.delete("/cart/clear", auth, CartController.clear);
 
-router.post("/cart/add", addToCartController);
-router.get("/cart", getCartController);
+router.get("/favorites", auth, FavoritesController.get);
+router.post("/favorites/add", auth, FavoritesController.add);
+router.delete("/favorites/remove", auth, FavoritesController.remove);
 
-router.post("/basket/increase", BasketController.increase);
-router.post("/basket/decrease", BasketController.decrease);
-router.post("/basket/remove", BasketController.remove);
+router.get("/delivery", auth, DeliveryController.get);
+router.post("/delivery/create", auth, DeliveryController.create);
 
-router.get("/delivery", DeliveryController.get);
-router.post("/delivery/create", DeliveryController.create);
-
-router.get("/favorites", FavoritesController.get);
-router.post("/favorites/add", FavoritesController.add);
-router.post("/favorites/decrease", FavoritesController.decrease);
-router.post("/favorites/remove", FavoritesController.remove);
 export default router;
