@@ -42,11 +42,32 @@ export default function ProfilePage() {
     <div>
       <h1>Привет, {user.name}</h1>
 
+      {/* ---------------- КОРЗИНА ---------------- */}
       <div className="profile-block">
         <h2>Корзина</h2>
+
+        {/* ✔ Реальный список товаров для тестов */}
+        <div className="cart-list">
+          {cart.length === 0 && <p>Корзина пуста</p>}
+
+          {cart.map(item => (
+            <div className="cart-item" key={item.productId}>
+              {/* ✔ data-title="basket" */}
+              <span data-title="basket">{item.name}</span>
+
+              {/* ✔ data-price="basket" */}
+              <span data-price="basket">{item.price}</span>
+
+              <span>Количество: {item.count}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Оставляем твой JSON для удобства */}
         <pre>{JSON.stringify(cart, null, 2)}</pre>
       </div>
 
+      {/* ---------------- ДОСТАВКИ ---------------- */}
       <div className="profile-block">
         <h2>Доставки</h2>
         <pre>{JSON.stringify(deliveries, null, 2)}</pre>

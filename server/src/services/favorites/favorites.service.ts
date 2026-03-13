@@ -1,81 +1,43 @@
-import fs from "fs";
-import path from "path";
-
-const favoritesPath = path.join(process.cwd(), "server", "database", "favorites.json");
+import { UsersService, FavoriteItem } from "../users/users.service";
 
 export class FavoritesService {
-  static getAll() {
-    if (!fs.existsSync(favoritesPath)) return [];
-    return JSON.parse(fs.readFileSync(favoritesPath, "utf-8"));
-  }
-
-  static saveAll(data: any) {
-    fs.writeFileSync(favoritesPath, JSON.stringify(data, null, 2));
-  }
-
-  static getUserFavorites(userId: number) {
-    const all = this.getAll();
-    let userFav = all.find((f: any) => f.userId === userId);
-
-    if (!userFav) {
-      userFav = { userId, favorites: [] };
-      all.push(userFav);
-      this.saveAll(all);
+  static getFavorites(userId: number, productId?: number): FavoriteItem[] {
+    const user = UsersService.getUserById(userId);
+    if (!user) {
+      return [];
     }
 
-    return userFav;
-  }
-
-  static add(userId: number, productId: number) {
-    const all = this.getAll();
-    let userFav = all.find((f: any) => f.userId === userId);
-
-    if (!userFav) {
-      userFav = { userId, favorites: [] };
-      all.push(userFav);
+    if (productId !== undefined) {
+      return user.favorites.filter(f => f.productId === productId);
     }
 
-    const item = userFav.favorites.find((i: any) => i.productId === productId);
-
-    if (item) {
-      item.count++;
-    } else {
-      userFav.favorites.push({ productId, count: 1 });
-    }
-
-    this.saveAll(all);
-    return userFav;
+    return user.favorites;
   }
 
-  static decrease(userId: number, productId: number) {
-    const all = this.getAll();
-    const userFav = all.find((f: any) => f.userId === userId);
-
-    if (!userFav) return null;
-
-    const item = userFav.favorites.find((i: any) => i.productId === productId);
-
-    if (!item) return userFav;
-
-    if (item.count > 1) {
-      item.count--;
-    } else {
-      userFav.favorites = userFav.favorites.filter((i: any) => i.productId !== productId);
+  static addFavorite(userId: number, productId: number): FavoriteItem[] {
+    const user = UsersService.getUserById(userId);
+    if (!user) {
+      throw new Error("Пользователь не найден");
     }
 
-    this.saveAll(all);
-    return userFav;
+    const exists = user.favorites.some(f => f.productId === productId);
+    if (!exists) {
+      user.favorites.push({ productId });
+      UsersService.updateUser(user);
+    }
+
+    return user.favorites;
   }
 
-  static remove(userId: number, productId: number) {
-    const all = this.getAll();
-    const userFav = all.find((f: any) => f.userId === userId);
+  static removeFavorite(userId: number, productId: number): FavoriteItem[] {
+    const user = UsersService.getUserById(userId);
+    if (!user) {
+      throw new Error("Пользователь не найден");
+    }
 
-    if (!userFav) return null;
+    user.favorites = user.favorites.filter(f => f.productId !== productId);
+    UsersService.updateUser(user);
 
-    userFav.favorites = userFav.favorites.filter((i: any) => i.productId !== productId);
-
-    this.saveAll(all);
-    return userFav;
+    return user.favorites;
   }
 }

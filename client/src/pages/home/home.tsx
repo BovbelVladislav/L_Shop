@@ -16,7 +16,6 @@ export default function HomePage() {
   const [onlyAvailable, setOnlyAvailable] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
-  // количество товаров по productId
   const [counts, setCounts] = useState<Record<number, number>>({});
 
   useEffect(() => {
@@ -79,68 +78,71 @@ export default function HomePage() {
     await addToCart(product.id, count);
   }
 
- return (
-  <div>
-    <h1>Товары</h1>
+  return (
+    <div>
+      <h1>Товары</h1>
 
-    {/* Блок фильтров */}
-    <div className="filters">
-      <input
-        placeholder="Поиск..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
-
-      <select
-        value={sort}
-        onChange={e => setSort(e.target.value as SortOrder)}
-      >
-        <option value="none">Без сортировки</option>
-        <option value="asc">Цена ↑</option>
-        <option value="desc">Цена ↓</option>
-      </select>
-
-      <select
-        value={category}
-        onChange={e => setCategory(e.target.value)}
-      >
-        <option value="all">Все категории</option>
-        <option value="coffee">Кофе</option>
-        <option value="drinks">Напитки</option>
-      </select>
-
-      <label>
+      {}
+      <div className="filters">
         <input
-          type="checkbox"
-          checked={onlyAvailable}
-          onChange={e => setOnlyAvailable(e.target.checked)}
+          placeholder="Поиск..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
         />
-        Только доступные
-      </label>
-    </div>
 
-    {/* Сетка карточек */}
-    <div className="products-grid">
-      {filteredProducts().map(p => (
-        <div className="product-card" key={p.id}>
-          <h3>{p.name}</h3>
-          <p>{p.description}</p>
-          <p>Цена: {p.price}</p>
+        <select
+          value={sort}
+          onChange={e => setSort(e.target.value as SortOrder)}
+        >
+          <option value="none">Без сортировки</option>
+          <option value="asc">Цена ↑</option>
+          <option value="desc">Цена ↓</option>
+        </select>
 
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+        >
+          <option value="all">Все категории</option>
+          <option value="coffee">Кофе</option>
+          <option value="drinks">Напитки</option>
+        </select>
+
+        <label>
           <input
-            type="number"
-            min={1}
-            value={getCount(p.id)}
-            onChange={e => changeCount(p.id, Number(e.target.value))}
+            type="checkbox"
+            checked={onlyAvailable}
+            onChange={e => setOnlyAvailable(e.target.checked)}
           />
+          Только доступные
+        </label>
+      </div>
 
-          <button onClick={() => void handleAddToCart(p)}>
-            Добавить
-          </button>
-        </div>
-      ))}
+      {}
+      <div className="products-grid">
+        {filteredProducts().map(p => (
+          <div className="product-card" key={p.id}>
+            {}
+            <h3 data-title>{p.name}</h3>
+
+            <p>{p.description}</p>
+
+            {}
+            <p data-price>{p.price}</p>
+
+            <input
+              type="number"
+              min={1}
+              value={getCount(p.id)}
+              onChange={e => changeCount(p.id, Number(e.target.value))}
+            />
+
+            <button onClick={() => void handleAddToCart(p)}>
+              Добавить
+            </button>
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
-);
-
+  );
 }

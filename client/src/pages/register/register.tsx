@@ -31,7 +31,11 @@ export default function RegisterPage() {
   }
 
   return (
-    <form className="register-form" onSubmit={handleSubmit}>
+    <form
+      className="register-form"
+      data-registration
+      onSubmit={handleSubmit}
+    >
       <h1>Регистрация</h1>
 
       <input

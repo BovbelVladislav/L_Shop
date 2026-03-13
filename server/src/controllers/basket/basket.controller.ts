@@ -1,37 +1,53 @@
 import { Request, Response } from "express";
 import { BasketService } from "../../services/basket/basket.service";
 
+interface BasketBody {
+  productId: number;
+}
+
 export class BasketController {
-  static increase(req: Request, res: Response) {
-    const session = req.cookies.session;
-    if (!session) return res.status(401).json({ message: "Не авторизован" });
+  static increase(req: Request<{}, {}, BasketBody>, res: Response) {
+    if (!req.user) {
+      return res.status(401).json({ message: "Не авторизован" });
+    }
 
     const { productId } = req.body;
-    const userId = Number(session);
 
-    const basket = BasketService.increase(userId, productId);
-    res.json(basket);
+    if (typeof productId !== "number") {
+      return res.status(400).json({ message: "productId должен быть числом" });
+    }
+
+    const basket = BasketService.increase(req.user.id, productId);
+    return res.json(basket);
   }
 
-  static decrease(req: Request, res: Response) {
-    const session = req.cookies.session;
-    if (!session) return res.status(401).json({ message: "Не авторизован" });
+  static decrease(req: Request<{}, {}, BasketBody>, res: Response) {
+    if (!req.user) {
+      return res.status(401).json({ message: "Не авторизован" });
+    }
 
     const { productId } = req.body;
-    const userId = Number(session);
 
-    const basket = BasketService.decrease(userId, productId);
-    res.json(basket);
+    if (typeof productId !== "number") {
+      return res.status(400).json({ message: "productId должен быть числом" });
+    }
+
+    const basket = BasketService.decrease(req.user.id, productId);
+    return res.json(basket);
   }
 
-  static remove(req: Request, res: Response) {
-    const session = req.cookies.session;
-    if (!session) return res.status(401).json({ message: "Не авторизован" });
+  static remove(req: Request<{}, {}, BasketBody>, res: Response) {
+    if (!req.user) {
+      return res.status(401).json({ message: "Не авторизован" });
+    }
 
     const { productId } = req.body;
-    const userId = Number(session);
 
-    const basket = BasketService.remove(userId, productId);
-    res.json(basket);
+    if (typeof productId !== "number") {
+      return res.status(400).json({ message: "productId должен быть числом" });
+    }
+
+    const basket = BasketService.remove(req.user.id, productId);
+    return res.json(basket);
   }
 }

@@ -27,7 +27,7 @@ export default function LoginPage() {
   }
 
   return (
-    <form className="auth-form" onSubmit={handleSubmit}>
+    <form className="auth-form" data-login onSubmit={handleSubmit}>
       <h1>Вход</h1>
 
       <input
