@@ -1,3 +1,5 @@
+import type { CartItem } from "../types/basket";
+
 export async function addToCart(productId: number, count: number): Promise<void> {
   const res = await fetch("http://localhost:3000/cart/add", {
     method: "POST",
@@ -9,5 +11,12 @@ export async function addToCart(productId: number, count: number): Promise<void>
   if (!res.ok) {
     throw new Error("Не удалось добавить в корзину");
   }
+}
+export async function getCart(): Promise<CartItem[]> {
+  const res = await fetch("http://localhost:3000/cart", {
+    credentials: "include"
+  });
+
+  return res.json();
 }
     
