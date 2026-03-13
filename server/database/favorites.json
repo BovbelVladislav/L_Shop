@@ -1,0 +1,9 @@
+[
+  {
+    "userId": 1,
+    "favorites": [
+      { "productId": 5, "count": 1 },
+      { "productId": 7, "count": 3 }
+    ]
+  }
+]
