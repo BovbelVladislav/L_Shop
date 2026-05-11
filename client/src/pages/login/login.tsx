@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { login } from "../../api/auth";
 import { useNavigate } from "react-router-dom";
+import { Input } from '../../components/ui/Input';
+import { Button } from '../../components/ui/Button';
 import "./login.css";
 
 export default function LoginPage() {
@@ -11,41 +13,53 @@ export default function LoginPage() {
     password: ""
   });
 
-  function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
+  // Обновленная функция: теперь мы передаем значение напрямую, 
+  // так как в универсальном инпуте мы можем сделать удобный пропс onChange
+  const handleFieldChange = (fieldName: string, value: string) => {
+    setForm(prev => ({ ...prev, [fieldName]: value }));
+  };
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const res = await login(form);
-
-    if (res.user) {
-      navigate("/profile");
-    } else {
-      alert(res.message);
+    try {
+        const res = await login(form);
+        if (res.user) {
+          navigate("/profile");
+        } else {
+          alert(res.message);
+        }
+    } catch (err) {
+        alert("Ошибка при входе");
     }
   }
 
   return (
-    <form className="auth-form" data-login onSubmit={handleSubmit}>
+    <form className="auth-form" onSubmit={handleSubmit}>
       <h1>Вход</h1>
 
-      <input
-        name="login"
+      {/* Используем твой универсальный Input */}
+      <Input
+        label="Логин"
+        type="text"
         placeholder="Email или логин"
         value={form.login}
-        onChange={handleChange}
+        onChange={(e) => handleFieldChange("login", e.target.value)}
       />
 
-      <input
-        name="password"
-        placeholder="Пароль"
+      <Input
+        label="Пароль"
         type="password"
+        placeholder="Введите пароль"
         value={form.password}
-        onChange={handleChange}
+        onChange={(e) => handleFieldChange("password", e.target.value)}
       />
 
-      <button type="submit">Войти</button>
+      {/* Используем твою универсальную Button */}
+      <Button 
+        type="submit" 
+        text="Войти" 
+        variant="primary" 
+      />
     </form>
   );
 }

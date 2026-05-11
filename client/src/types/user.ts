@@ -5,3 +5,7 @@ export interface User {
   login: string;
   phone: string;
 }
+export interface AuthResponse {
+  message: string;
+  user: User;
+}

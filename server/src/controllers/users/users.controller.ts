@@ -8,7 +8,52 @@ interface LoginBody {
   password: string;
 }
 
+/**
+ * @swagger
+ * components:
+ * schemas:
+ * User:
+ * type: object
+ * properties:
+ * id:
+ * type: number
+ * name:
+ * type: string
+ * login:
+ * type: string
+ * email:
+ * type: string
+ * phone:
+ * type: string
+ */
+
 export class UsersController {
+
+/**
+   * @swagger
+   * /register:
+   * post:
+   * summary: Регистрация нового пользователя
+   * tags: [Auth]
+   * requestBody:
+   * required: true
+   * content:
+   * application/json:
+   * schema:
+   * $ref: '#/components/schemas/User'
+   * responses:
+   * 200:
+   * description: Успешная регистрация
+   * 400:
+   * description: Ошибка валидации
+   */
+  /**
+   * Регистрация пользователя в системе
+   * @param {Request} req - Объект запроса с данными RegisterBody
+   * @param {Response} res - Объект ответа
+   * @returns {Promise<Response>} JSON с сообщением и данными пользователя
+   */
+
   static async register(req: Request<{}, {}, RegisterBody>, res: Response) {
     try {
       const { name, email, login, phone, password } = req.body;
@@ -30,7 +75,30 @@ export class UsersController {
       return res.status(400).json({ message: error.message });
     }
   }
-
+/**
+   * @swagger
+   * /login:
+   * post:
+   * summary: Авторизация пользователя
+   * tags: [Auth]
+   * requestBody:
+   * required: true
+   * content:
+   * application/json:
+   * schema:
+   * type: object
+   * properties:
+   * login:
+   * type: string
+   * password:
+   * type: string
+   * responses:
+   * 200:
+   * description: Успешный вход
+   * 401:
+   * description: Неверный логин или пароль
+   */
+   
   static async login(req: Request<{}, {}, LoginBody>, res: Response) {
     try {
       const { login, password } = req.body;
