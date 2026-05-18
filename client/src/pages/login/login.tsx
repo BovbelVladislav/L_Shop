@@ -13,8 +13,7 @@ export default function LoginPage() {
     password: ""
   });
 
-  // Обновленная функция: теперь мы передаем значение напрямую, 
-  // так как в универсальном инпуте мы можем сделать удобный пропс onChange
+
   const handleFieldChange = (fieldName: string, value: string) => {
     setForm(prev => ({ ...prev, [fieldName]: value }));
   };

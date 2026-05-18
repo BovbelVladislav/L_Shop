@@ -1,7 +1,6 @@
 import React from 'react';
 
 /**
-
  * @param {string} label 
  * @param {string} type 
  */
