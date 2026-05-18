@@ -75,6 +75,7 @@ export class UsersController {
       return res.status(400).json({ message: error.message });
     }
   }
+  
 /**
    * @swagger
    * /login:
