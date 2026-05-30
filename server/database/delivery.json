@@ -1,0 +1,15 @@
+[
+  {
+    "id": 123456,
+    "userId": 1,
+    "address": "Москва, ул. Пушкина",
+    "phone": "+79999999999",
+    "email": "test@mail.com",
+    "payment": "card",
+    "comment": "Позвонить за 10 минут",
+    "items": [
+      { "productId": 5, "count": 2 }
+    ],
+    "createdAt": "2026-03-13T19:00:00.000Z"
+  }
+]

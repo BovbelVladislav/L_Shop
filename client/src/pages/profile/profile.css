@@ -1,0 +1,18 @@
+.profile-block {
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.profile-block h2 {
+  margin-top: 0;
+}
+
+.profile-block pre {
+  background: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  overflow-x: auto;
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./home.css";
 import type { Product } from "../../types/product";
 import type { User } from "../../types/user";
 import { getProducts } from "../../api/products";
@@ -15,6 +16,8 @@ export default function HomePage() {
   const [onlyAvailable, setOnlyAvailable] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
 
+  const [counts, setCounts] = useState<Record<number, number>>({});
+
   useEffect(() => {
     void load();
   }, []);
@@ -27,6 +30,17 @@ export default function HomePage() {
     if (me.user) {
       setUser(me.user);
     }
+  }
+
+  function changeCount(productId: number, value: number) {
+    setCounts(prev => ({
+      ...prev,
+      [productId]: value < 1 || Number.isNaN(value) ? 1 : value
+    }));
+  }
+
+  function getCount(productId: number): number {
+    return counts[productId] ?? 1;
   }
 
   function filteredProducts(): Product[] {
@@ -54,12 +68,13 @@ export default function HomePage() {
     return list;
   }
 
-  async function handleAddToCart(product: Product, count: number): Promise<void> {
+  async function handleAddToCart(product: Product): Promise<void> {
     if (!user) {
       alert("Только зарегистрированные пользователи могут добавлять товары");
       return;
     }
 
+    const count = getCount(product.id);
     await addToCart(product.id, count);
   }
 
@@ -67,66 +82,66 @@ export default function HomePage() {
     <div>
       <h1>Товары</h1>
 
-      <input
-        placeholder="Поиск..."
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-      />
-
-      <select
-        value={sort}
-        onChange={e => setSort(e.target.value as SortOrder)}
-      >
-        <option value="none">Без сортировки</option>
-        <option value="asc">Цена ↑</option>
-        <option value="desc">Цена ↓</option>
-      </select>
-
-      <select
-        value={category}
-        onChange={e => setCategory(e.target.value)}
-      >
-        <option value="all">Все категории</option>
-        <option value="coffee">Кофе</option>
-        <option value="drinks">Напитки</option>
-      </select>
-
-      <label>
+      {}
+      <div className="filters">
         <input
-          type="checkbox"
-          checked={onlyAvailable}
-          onChange={e => setOnlyAvailable(e.target.checked)}
+          placeholder="Поиск..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
         />
-        Только доступные
-      </label>
 
-      <div>
-        {filteredProducts().map(p => {
-          const defaultCount = 1;
-          let currentCount = defaultCount;
+        <select
+          value={sort}
+          onChange={e => setSort(e.target.value as SortOrder)}
+        >
+          <option value="none">Без сортировки</option>
+          <option value="asc">Цена ↑</option>
+          <option value="desc">Цена ↓</option>
+        </select>
 
-          return (
-            <div key={p.id}>
-              <h3>{p.name}</h3>
-              <p>{p.description}</p>
-              <p>Цена: {p.price}</p>
+        <select
+          value={category}
+          onChange={e => setCategory(e.target.value)}
+        >
+          <option value="all">Все категории</option>
+          <option value="coffee">Кофе</option>
+          <option value="drinks">Напитки</option>
+        </select>
 
-              <input
-                type="number"
-                min={1}
-                defaultValue={defaultCount}
-                onChange={e => {
-                  const value = Number(e.target.value);
-                  currentCount = Number.isNaN(value) || value < 1 ? 1 : value;
-                }}
-              />
+        <label>
+          <input
+            type="checkbox"
+            checked={onlyAvailable}
+            onChange={e => setOnlyAvailable(e.target.checked)}
+          />
+          Только доступные
+        </label>
+      </div>
 
-              <button onClick={() => void handleAddToCart(p, currentCount)}>
-                Добавить
-              </button>
-            </div>
-          );
-        })}
+      {}
+      <div className="products-grid">
+        {filteredProducts().map(p => (
+          <div className="product-card" key={p.id}>
+            {}
+            <h3 data-title>{p.name}</h3>
+
+            <p>{p.description}</p>
+
+            {}
+            <p data-price>{p.price}</p>
+
+            <input
+              type="number"
+              min={1}
+              value={getCount(p.id)}
+              onChange={e => changeCount(p.id, Number(e.target.value))}
+            />
+
+            <button onClick={() => void handleAddToCart(p)}>
+              Добавить
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
