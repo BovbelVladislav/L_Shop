@@ -29,5 +29,8 @@ router.delete("/favorites/remove", auth, FavoritesController.remove);
 
 router.get("/delivery", auth, DeliveryController.get);
 router.post("/delivery/create", auth, DeliveryController.create);
+router.get("/products", ProductsController.get);
+router.get("/products/:id", ProductsController.getOne);
+router.post("/products/:id/review", auth, ProductsController.addReview);
 
 export default router;

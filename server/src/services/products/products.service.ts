@@ -19,8 +19,54 @@ export interface ProductsFilter {
   sort?: "price" | "name";
   available?: boolean;
 }
-
+export interface IBackendProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  available: boolean;
+  
+  averageRating?: number;
+  comments?: Array<{ 
+    username: string; 
+    text: string; 
+    rating: number; 
+    date: string; 
+  }>;
+}
 export class ProductsService {
+  // Добавь этот метод прямо внутрь класса ProductsService:
+private static products: IBackendProduct[] = [
+    // твои товары...
+  ];
+static addCommentAndRecalculateRating(
+  id: number, 
+  comment: { username: string; text: string; rating: number; date: string }
+) {
+  // 1. Ищем товар в твоем массиве данных. 
+  // (Замени 'this.products' на имя массива, который используется у тебя внутри сервиса, например, 'productsData' или т.п.)
+  const product = this.products.find(p => p.id === id);
+
+  if (!product) return null;
+
+  // 2. Если у товара ещё нет массива комментариев, создаём его
+  if (!product.comments) {
+    product.comments = [];
+  }
+
+  // 3. Добавляем новый отзыв
+  product.comments.push(comment);
+
+  // 4. Пересчитываем средний рейтинг (округляем до 1 знака после запятой)
+  const totalRating = product.comments.reduce((sum: number, c: any) => sum + c.rating, 0);
+  product.averageRating = Number((totalRating / product.comments.length).toFixed(1));
+
+  // 5. 💡 ВАЖНО: Если у тебя в проекте данные сохраняются в JSON-файл (например, через fs.writeFileSync),
+  // не забудь прямо здесь вызвать твой метод сохранения, чтобы отзывы не пропадали при перезапуске сервера:
+  // this.saveToFile(); 
+
+  return product;
+}
   private static loadAll(): Product[] {
     if (!fs.existsSync(productsPath)) {
       fs.writeFileSync(productsPath, "[]");
