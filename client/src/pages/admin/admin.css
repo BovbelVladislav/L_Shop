@@ -1,0 +1,143 @@
+.admin-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.admin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.products-list {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.products-list table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.products-list th,
+.products-list td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.products-list th {
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+.products-list button {
+  padding: 0.4rem 0.8rem;
+  margin: 0 0.25rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.products-list button:first-child {
+  background: #007bff;
+  color: white;
+}
+
+.products-list button:first-child:hover {
+  background: #0056b3;
+}
+
+.products-list button:last-child {
+  background: #dc3545;
+  color: white;
+}
+
+.products-list button:last-child:hover {
+  background: #c82333;
+}
+
+.product-form {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.form-group input[type="checkbox"] {
+  margin-right: 0.5rem;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.form-buttons button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.form-buttons button[type="submit"] {
+  background: #28a745;
+  color: white;
+}
+
+.form-buttons button[type="submit"]:hover {
+  background: #218838;
+}
+
+.form-buttons button[type="button"] {
+  background: #e2e3e5;
+  color: #333;
+}
+
+.form-buttons button[type="button"]:hover {
+  background: #dae0e5;
+}
+
+@media (max-width: 768px) {
+  .admin-grid {
+    grid-template-columns: 1fr;
+  }
+}

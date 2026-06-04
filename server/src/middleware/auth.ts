@@ -27,7 +27,9 @@ export function auth(req: Request, res: Response, next: NextFunction): void {
     email: user.email,
     login: user.login,
     phone: user.phone,
-    name: user.name
+    name: user.name,
+    role: user.role || 'user',
+    sessionExpiry: user.sessionExpiry
   };
 
   next();

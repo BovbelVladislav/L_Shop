@@ -11,6 +11,9 @@ export interface Product {
   category: string;
   available: boolean;
   image?: string;
+  tags?: string[];
+  rating?: number;
+  reviewCount?: number;
 }
 
 export interface ProductsFilter {
@@ -81,6 +84,10 @@ static addCommentAndRecalculateRating(
     }
   }
 
+  private static saveAll(products: Product[]): void {
+    fs.writeFileSync(productsPath, JSON.stringify(products, null, 2));
+  }
+
   static getAllProducts(filters: ProductsFilter = {}): Product[] {
     let products = this.loadAll();
 
@@ -115,5 +122,38 @@ static addCommentAndRecalculateRating(
   static getById(id: number): Product | undefined {
     const products = this.loadAll();
     return products.find(p => p.id === id);
+  }
+
+  static addProduct(data: Omit<Product, 'id'>): Product {
+    const products = this.loadAll();
+    const newProduct: Product = {
+      id: Date.now(),
+      ...data
+    };
+    products.push(newProduct);
+    this.saveAll(products);
+    return newProduct;
+  }
+
+  static updateProduct(id: number, data: Partial<Omit<Product, 'id'>>): Product | undefined {
+    const products = this.loadAll();
+    const index = products.findIndex(p => p.id === id);
+
+    if (index === -1) return undefined;
+
+    products[index] = { ...products[index], ...data };
+    this.saveAll(products);
+    return products[index];
+  }
+
+  static deleteProduct(id: number): boolean {
+    const products = this.loadAll();
+    const index = products.findIndex(p => p.id === id);
+
+    if (index === -1) return false;
+
+    products.splice(index, 1);
+    this.saveAll(products);
+    return true;
   }
 }

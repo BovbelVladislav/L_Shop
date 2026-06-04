@@ -5,6 +5,9 @@ import { ProductsController } from "../controllers/products/products.controller"
 import { CartController } from "../controllers/cart/cart.controller";
 import { FavoritesController } from "../controllers/favorites/favorites.controller";
 import { DeliveryController } from "../controllers/delivery/delivery.controller";
+import { RatingsController } from "../controllers/ratings/ratings.controller";
+import { AdminController } from "../controllers/admin/admin.controller";
+import { RecommendationsController } from "../controllers/recommendations/recommendations.controller";
 
 import { auth } from "../middleware/auth";
 
@@ -32,5 +35,19 @@ router.post("/delivery/create", auth, DeliveryController.create);
 router.get("/products", ProductsController.get);
 router.get("/products/:id", ProductsController.getOne);
 router.post("/products/:id/review", auth, ProductsController.addReview);
+
+router.post("/ratings", auth, RatingsController.addRating);
+router.get("/ratings/:id", RatingsController.getProductRatings);
+router.delete("/ratings/:id", auth, RatingsController.deleteRating);
+
+router.post("/admin/products", auth, AdminController.createProduct);
+router.put("/admin/products/:id", auth, AdminController.updateProduct);
+router.delete("/admin/products/:id", auth, AdminController.deleteProduct);
+
+router.get("/locales", AdminController.getLocale);
+router.get("/languages", AdminController.getAvailableLanguages);
+
+router.post("/recommendations/like/:id", auth, RecommendationsController.likeProduct);
+router.get("/recommendations", auth, RecommendationsController.getRecommendations);
 
 export default router;

@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 
 const usersPath = path.join(process.cwd(), "server", "database", "users.json");
 
+export type UserRole = 'guest' | 'user' | 'owner' | 'manager';
+
 export interface CartItem {
   productId: number;
   count: number;
@@ -35,6 +37,9 @@ export interface User {
   cart: CartItem[];
   favorites: FavoriteItem[];
   deliveries: DeliveryRecord[];
+  role?: UserRole;
+  sessionExpiry?: number;
+  recommendations?: string[];
 }
 
 export interface RegisterData {
@@ -99,7 +104,9 @@ export class UsersService {
       password: hashed,
       cart: [],
       favorites: [],
-      deliveries: []
+      deliveries: [],
+      role: 'user',
+      recommendations: []
     };
 
     users.push(newUser);

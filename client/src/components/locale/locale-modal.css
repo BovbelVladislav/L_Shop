@@ -1,0 +1,52 @@
+.locale-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.locale-modal {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.locale-modal h2 {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.5rem;
+}
+
+.locale-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.locale-btn {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.locale-btn:hover {
+  border-color: #007bff;
+  color: #007bff;
+}
+
+.locale-btn.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}

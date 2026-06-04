@@ -1,26 +1,47 @@
 [
   {
     "id": 1,
-    "name": "iPhone 15",
-    "description": "Современный смартфон Apple",
-    "price": 999,
-    "category": "phones",
-    "available": true
+    "name": "Espresso",
+    "description": "Крепкий эспрессо из зёрен Arabica",
+    "price": 3.50,
+    "category": "coffee",
+    "available": true,
+    "tags": ["coffee", "espresso", "hot", "strong"]
   },
   {
     "id": 2,
-    "name": "Samsung Galaxy S24",
-    "description": "Флагман Samsung",
-    "price": 899,
-    "category": "phones",
-    "available": true
+    "name": "Cappuccino",
+    "description": "Классический капучино с молочной пеной",
+    "price": 4.50,
+    "category": "coffee",
+    "available": true,
+    "tags": ["coffee", "cappuccino", "hot", "milk"]
   },
   {
     "id": 3,
-    "name": "Xiaomi Vacuum Cleaner",
-    "description": "Робот-пылесос",
-    "price": 299,
-    "category": "home",
-    "available": false
+    "name": "Iced Coffee",
+    "description": "Холодный кофе с льдом",
+    "price": 4.00,
+    "category": "drinks",
+    "available": true,
+    "tags": ["coffee", "cold", "iced", "refreshing"]
+  },
+  {
+    "id": 4,
+    "name": "Latte",
+    "description": "Мягкий латте с молоком",
+    "price": 4.75,
+    "category": "coffee",
+    "available": true,
+    "tags": ["coffee", "latte", "hot", "milk", "smooth"]
+  },
+  {
+    "id": 5,
+    "name": "Orange Juice",
+    "description": "Свежевыжатый апельсиновый сок",
+    "price": 5.00,
+    "category": "drinks",
+    "available": true,
+    "tags": ["juice", "orange", "fresh", "refreshing"]
   }
 ]
