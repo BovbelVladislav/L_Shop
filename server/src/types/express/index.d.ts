@@ -9,6 +9,8 @@ declare global {
         login: string;
         phone: string;
         name: string;
+        role?: 'guest' | 'user' | 'owner' | 'manager';
+        sessionExpiry?: number;
       };
     }
   }
