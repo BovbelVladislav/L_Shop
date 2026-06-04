@@ -5,4 +5,7 @@ export interface Product {
   price: number;
   category: string;
   available: boolean;
+  tags?: string[];
+  rating?: number;
+  reviewCount?: number;
 }

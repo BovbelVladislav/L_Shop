@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import "./home.css";
+import { useLocale } from "../../context/LocaleContext";
 import type { Product } from "../../types/product";
 import type { User } from "../../types/user";
 import { getProducts } from "../../api/products";
 import { getMe } from "../../api/auth";
 import { addToCart } from "../../api/cart";
+import { likeProduct } from "../../api/recommendations";
 
 type SortOrder = "none" | "asc" | "desc";
 
 export default function HomePage() {
+  const { t } = useLocale();
   const [products, setProducts] = useState<Product[]>([]);
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<SortOrder>("none");
@@ -17,6 +20,7 @@ export default function HomePage() {
   const [user, setUser] = useState<User | null>(null);
 
   const [counts, setCounts] = useState<Record<number, number>>({});
+  const [liked, setLiked] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     void load();
@@ -70,22 +74,36 @@ export default function HomePage() {
 
   async function handleAddToCart(product: Product): Promise<void> {
     if (!user) {
-      alert("Только зарегистрированные пользователи могут добавлять товары");
+      alert(t('common.search'));
       return;
     }
 
     const count = getCount(product.id);
     await addToCart(product.id, count);
+    alert(t('product.addedToCart') || 'Добавлено в корзину');
+  }
+
+  async function handleLikeProduct(product: Product): Promise<void> {
+    if (!user) {
+      alert(t('common.search'));
+      return;
+    }
+
+    try {
+      await likeProduct(product.id);
+      setLiked(new Set([...liked, product.id]));
+    } catch (e) {
+      console.error('Like failed:', e);
+    }
   }
 
   return (
     <div>
-      <h1>Товары</h1>
+      <h1>{t('pages.products')}</h1>
 
-      {}
       <div className="filters">
         <input
-          placeholder="Поиск..."
+          placeholder={t('filter.search')}
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
@@ -94,18 +112,18 @@ export default function HomePage() {
           value={sort}
           onChange={e => setSort(e.target.value as SortOrder)}
         >
-          <option value="none">Без сортировки</option>
-          <option value="asc">Цена ↑</option>
-          <option value="desc">Цена ↓</option>
+          <option value="none">{t('filter.priceNone')}</option>
+          <option value="asc">{t('filter.priceAsc')}</option>
+          <option value="desc">{t('filter.priceDesc')}</option>
         </select>
 
         <select
           value={category}
           onChange={e => setCategory(e.target.value)}
         >
-          <option value="all">Все категории</option>
-          <option value="coffee">Кофе</option>
-          <option value="drinks">Напитки</option>
+          <option value="all">{t('filter.allCategories')}</option>
+          <option value="coffee">{t('filter.coffee')}</option>
+          <option value="drinks">{t('filter.drinks')}</option>
         </select>
 
         <label>
@@ -114,21 +132,22 @@ export default function HomePage() {
             checked={onlyAvailable}
             onChange={e => setOnlyAvailable(e.target.checked)}
           />
-          Только доступные
+          {t('filter.onlyAvailable')}
         </label>
       </div>
 
-      {}
       <div className="products-grid">
         {filteredProducts().map(p => (
           <div className="product-card" key={p.id}>
-            {}
             <h3 data-title>{p.name}</h3>
 
             <p>{p.description}</p>
 
-            {}
-            <p data-price>{p.price}</p>
+            <p data-price>{t('product.price')}: ${p.price}</p>
+
+            {p.rating !== undefined && (
+              <p data-rating>⭐ {p.rating.toFixed(1)} ({p.reviewCount || 0} {t('product.reviews')})</p>
+            )}
 
             <input
               type="number"
@@ -138,8 +157,17 @@ export default function HomePage() {
             />
 
             <button onClick={() => void handleAddToCart(p)}>
-              Добавить
+              {t('product.addToCart')}
             </button>
+
+            {user && (
+              <button 
+                onClick={() => void handleLikeProduct(p)}
+                style={{ marginLeft: '8px', background: liked.has(p.id) ? '#ff6b6b' : '#ccc' }}
+              >
+                {liked.has(p.id) ? '❤️' : '🤍'} {t('product.like') || 'Like'}
+              </button>
+            )}
           </div>
         ))}
       </div>
